@@ -26,7 +26,7 @@
     <p><input type="button" value="Login" onclick="location.href='http://webwaygate.com/ian/pt/login.php';"></p>
     
     <p>Or you can go straight to the game by clicking here.</p>
-    <p><input type="button" value="Game" onclick="location.href='http://webwaygate.com/ian/pt/game.php';"></p>
+    <p><input type="button" value="Game" onclick="location.href='game.php';"></p>
     </div>
     
     <div id="footer">
