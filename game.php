@@ -1,0 +1,5 @@
+<html><head>
+	<script src="phaser.js"></script>
+	<script src="game.js"></script>
+</head>
+<body></body></html>
