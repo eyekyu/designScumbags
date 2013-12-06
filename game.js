@@ -5,7 +5,7 @@ function player(){
     dx:0;
     dy:0;
     dist:0;
-    time:0;
+    time:10;
     speed:100;
     moveBoolX:false;
     moveBoolY:false;
@@ -73,7 +73,6 @@ function getThere(){
     player.moveBoolX = true;
     player.moveBoolY = true;
     player.xy = Math.abs(player.dx)-Math.abs(player.dy);
-    console.log(player.xy);
     playerAnimation();
 }
 
@@ -83,12 +82,14 @@ function update(){
     game.input.onDown.add(getThere, this);
     if(player.moveBoolX){
         if(player.dx > 0){
-            playerSprite.body.velocity.x = player.speed;
+            playerSprite.body.velocity.x = (player.dx/player.time)*1000;
             player.facing = 'rightStop';
+            console.log(playerSprite.body.velocity.x);
         }
         if(player.dx < 0){
-            playerSprite.body.velocity.x = -player.speed;
+            playerSprite.body.velocity.x = (player.dx/player.time)*1000;
             player.facing = 'leftStop';
+            console.log(playerSprite.body.velocity.x);
         }
         if((playerSprite.x < player.newX+5) && (playerSprite.x > player.newX-5)){
             playerSprite.body.velocity.x = 0;
@@ -96,14 +97,17 @@ function update(){
             player.moveBoolX = false;
         }
     }
+    
     if(player.moveBoolY){
         if(player.dy > 0){
-            playerSprite.body.velocity.y = player.speed
+            playerSprite.body.velocity.y = (player.dy/player.time)*1000;
             player.facing = 'downStop';
+            //console.log(playerSprite.body.velocity.y);
         }
         if(player.dy < 0){
-            playerSprite.body.velocity.y = -player.speed
+            playerSprite.body.velocity.y = (player.dy/player.time)*1000;
             player.facing = 'upStop';
+            //console.log(playerSprite.body.velocity.y);
         }
         if((playerSprite.y < player.newY+5) && (playerSprite.y > player.newY-5)){
             playerSprite.body.velocity.y = 0;
@@ -111,31 +115,17 @@ function update(){
             player.moveBoolY = false;
         }
     }
-    if(playerSprite.body.velocity.y == 0 && playerSprite.body.velocity.x == 0){
-            playerSprite.animations.play(player.facing);
-        console.log(player.facing);
-    }
+    
+    if(playerSprite.body.velocity.y == 0 && playerSprite.body.velocity.x == 0){playerSprite.animations.play(player.facing);}
     land.tilePosition.x = -game.camera.x;
     land.tilePosition.y = -game.camera.y;
 }
 
 function playerAnimation(){
-    if(player.dx<0 && player.xy > 0){
-        playerSprite.animations.play('left');
-        if(playerSprite.x==player.newX && playerSprite.y == player.newY){
-            playerSprite.animations.stop();
-            playerSprite.frame=1;
-    	}
-    }
-    else if(player.dx>0 && player.xy > 0){
-        playerSprite.animations.play('right');
-    }
-     else if(player.dy<0 && player.xy < 0){
-        playerSprite.animations.play('up');
-    }
-     else if(player.dy>0 && player.xy < 0){
-        playerSprite.animations.play('down');
-    }
+    if(player.dx<0 && player.xy > 0){playerSprite.animations.play('left');}
+    if(player.dx>0 && player.xy > 0){playerSprite.animations.play('right')}
+    if(player.dy<0 && player.xy < 0){playerSprite.animations.play('up')}
+    if(player.dy>0 && player.xy < 0){playerSprite.animations.play('down')}
 }
 
 function collisionHandler(){
