@@ -70,7 +70,6 @@ function create(){
     //assign assest to vars
     game.world.setBounds(0, 0, 800, 800);
 	killzom = game.add.audio('kill');
-	pause = game.add.button(5, 60, 'pausebutton', actionOnClick, this, 2, 1, 0)
     land = game.add.tileSprite (0, 0, game.width, game.height, 'bg');
     land.fixedToCamera = true;
     
@@ -107,6 +106,7 @@ function create(){
 	game.camera.focusOnXY(0, 0);
 	hpxpbar = game.add.sprite(5, 3, 'hpxp');
 	hpxpbar.fixedToCamera = true;
+	pause = game.add.button(5, 60, 'pausebutton', actionOnClick, this, 2, 1, 0)
 }
 
 function update(){
