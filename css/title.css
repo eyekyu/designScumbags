@@ -1,0 +1,25 @@
+#loginBlood, #registerBlood, #playBlood{
+    background-repeat:no-repeat;
+    height:200px;
+    width:240px;
+}
+#loginBlood{background-image: url(../images/loginBlood.png); }
+#registerBlood{background-image: url(../images/registerBlood.png); }
+#playBlood{background-image: url(../images/playBlood.png); }
+
+.buttons{
+    margin-top:100px;
+    display:inline-block;
+}
+
+.play:hover, .buttons:hover{
+	opacity:0.5;
+	cursor:pointer;
+}
+
+.credit{
+    font-family:"impact", cursive, sans-serif;
+    font-size: 20px;
+    opacity:0.6;
+    margin-left:20px;
+}

@@ -1,0 +1,19 @@
+*{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	font-family:"Comic Sans MS", cursive, sans-serif;
+	color:white;
+	user-select: none;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	cursor:default;
+}
+html { 
+    background: url(../images/ZombieEye.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow:hidden;
+}

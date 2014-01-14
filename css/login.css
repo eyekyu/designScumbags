@@ -1,0 +1,23 @@
+#form{
+    margin-top:200px;
+    margin-left:100px;
+}
+
+#userName, #password{
+    color:black;
+}
+
+#submitButton, #registerNow{
+    color:black;
+    background-image: url(images/loginBlood.png); 
+    background-repeat:no-repeat;
+    height:200px;
+    width:200px;
+}
+
+#home{
+    color:black;
+    margin-right:350px;
+}
+
+.lineUp{display:inline-block;}

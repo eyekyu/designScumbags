@@ -17,5 +17,6 @@ function Player(){
     this.players = game.add.sprite(200, 200, 'playerSpriteSheet');
     this.players.body.collideWorldBounds = true;
     this.players.anchor.setTo(0.5, 0.5);
-    this.players.body.immovable = true;
+    this.players.inputEnabled = true;
+    this.players.body.immovable = false;
 }

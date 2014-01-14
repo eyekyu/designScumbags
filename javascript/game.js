@@ -1,25 +1,37 @@
-var bg, hm, fixed, land, localPlayer, enemyGroup, text, enemies, numOfZombs,pause, hpB, xpB, hpF, xpF, dmg;
-numOfZombs = 10;
-dmg = 0.25;
-var game = new Phaser.Game(480, 320, Phaser.AUTO,'',{preload: preload, create:create, update:update});
+var bg, hm, fixed, land, localPlayer, enemyGroup, text, enemies, numOfZombs, pause, hpB, xpB, hpF, xpF, dmg, boss, killzom, exp, obstacles, bullets, localPlayer, coin, pond, cursors; numOfZombs=10;numOfTrees=20;numOfRocks=20; menuUp = false; dmg = 0.25; exp = 2; weapon = false; origWidth = 1358; origHeight=700; moved=false; inventoryOpen=true; allPlayers = []; rocks = []; trees = []; nextFire = 0; fireRate = 100;
 
+var game = new Phaser.Game(origWidth, origHeight, Phaser.AUTO,'',{preload: preload, create:create, update:update});
+//game.state.add('one', one, true);
 function preload(){
     text = game.add.text(240, 160, "", {
         font: "25px Arial",
         fill: "#ff0044",
         align: "left"
     });
+    
     //load assets
-	game.load.spritesheet('playerSpriteSheet', 'images/character.png',27,32);
-    game.load.spritesheet('zombie', 'images/zombie.png',26,32);
-	game.load.image('bg','images/bg.jpg');
-    game.load.image('hpF','images/hpF.png');
-    game.load.image('hpB','images/hpB.png');
-    game.load.image('xpF','images/xpF.png');
-    game.load.image('xpB','images/xpB.png');
-    game.load.image('chainsaw','images/cs.png');
-	game.load.image('pausebutton','images/pausebutton.png');
-    game.load.audio('kill', ['sounds/kill.mp3']);
+	game.load.spritesheet('playerSpriteSheet', '../images/character.png',27,32);
+    game.load.spritesheet('zombie',            '../images/zombie.png',   26,32);
+    
+    game.load.audio('kill', ['../sounds/kill.mp3']);
+    
+    text.setText("Loading..");
+	game.load.image('bg',            '../images/bg.jpg');
+    game.load.image('hpF',           '../images/hpF3.png');
+    game.load.image('hpB',           '../images/hpB3.png');
+    game.load.image('xpF',           '../images/xpF.png');
+    game.load.image('xpB',           '../images/xpB.png');
+    game.load.image('chainsaw',      '../images/bowArrow.png');
+	game.load.image('menu',          '../images/QA.png');
+	game.load.image('inven',         '../images/inventory.png');
+	game.load.image('invisibleSheet','../images/sheet.png');
+	game.load.image('tree',          '../images/trees.png');
+	game.load.image('overMenu',      '../images/menu.png');
+	game.load.image('pausebutton',   '../images/pausebutton.png');
+    game.load.image('arrow',         '../images/arrow.png');
+	game.load.image('pond',          '../images/pond.png');
+	game.load.image('rock',          '../images/rock.png');
+	game.load.image('coin',          '../images/coin.png');
     text.setText("Loading");
   /*game.load.audio('BG', ['Travel.mp3']);
 	music = game.add.audio('BG');
@@ -29,14 +41,48 @@ function preload(){
 
 function create(){
     //assign assest to vars
-    game.world.setBounds(0, 0, 900, 900);
+    game.world.setBounds(0, 0, 2000, 2000);
 	killzom = game.add.audio('kill');
     land = game.add.tileSprite (-50, -50, game.width+100, game.height+100, 'bg');
     land.fixedToCamera = true;
-    allPlayers = [];
-    for (var i = 0; i < 1; i++){
+	
+	bg = game.add.sprite(0, 0, 'invisibleSheet');
+	bg.fixedToCamera = true;
+	bg.scale.setTo(origWidth, origHeight);
+	bg.inputEnabled = true;
+	bg.input.priorityID = 0;
+	
+	coin = game.add.sprite(760, 180, 'coin');
+    coin.anchor.setTo(0.5, 0.5);
+    
+	for(var i = 0; i<numOfRocks; i++){
+        var centX = coin.x;
+        var centY = coin.y;
+        var rockX;
+        var rockY;
+        if(i == 0){rockX = centX;    rockY = centY-90;}
+        if(i == 1){rockX = centX-30; rockY = centY-60;}
+        if(i == 2){rockX = centX+30; rockY = centY-60;}
+        if(i == 3){rockX = centX-60; rockY = centY-15;}
+        if(i == 4){rockX = centX+60; rockY = centY-15;}
+        if(i == 5){rockX = centX-60; rockY = centY+15;}
+        if(i == 6){rockX = centX+60; rockY = centY+15;}
+        if(i == 7){rockX = centX-30; rockY = centY+60;}
+        if(i == 8){rockX = centX+30; rockY = centY+60;}
+        if(i == 9){rockX = centX;    rockY = centY+90;}
+        rocks.push(new Obs(rockX, rockY, 'rock'));
+        rocks[i].obj.width = 30;
+        rocks[i].obj.height = 30;
+    }
+	
+    new Obs(670, 700, 'pond');
+	
+	//allows us to add more touch inputs
+	//game.input.addPointer();
+	
+    for(var i = 0; i < 1; i++){
         allPlayers.push(new Player());
-        //animation for when not moving
+        //sprites for when not moving
         allPlayers[i].players.animations.add('downStop',  [1],  true);
         allPlayers[i].players.animations.add('leftStop',  [4],  true);
         allPlayers[i].players.animations.add('rightStop', [7],  true);
@@ -49,8 +95,9 @@ function create(){
     }
     localPlayer = allPlayers[0];
     localPlayer.players.animations.play('downStop');
+    
     enemies = [];
-    for (var i = 0; i < numOfZombs; i++){
+    for(var i = 0; i < numOfZombs; i++){
         enemies.push(new EnemyZom());
         enemies[i].zombie.animations.add('downZ',  [0,1,2,1],    localPlayer.fps, true);
         enemies[i].zombie.animations.add('leftZ',  [3,4,5,4],    localPlayer.fps, true);
@@ -66,6 +113,18 @@ function create(){
         }
     }
     
+    for(var i = 0; i < numOfTrees; i++){
+        trees.push(new Obs(game.world.randomX, game.world.randomY, 'tree'));
+        if(trees[i].obj.x < localPlayer.players.x+300 && trees[i].obj.x > localPlayer.players.x-300 ){
+            if(trees[i].obj.x > localPlayer.players.x){trees[i].obj.x += 250}
+            if(trees[i].obj.x < localPlayer.players.x){trees[i].obj.x -= 250}
+        }
+        if(trees[i].obj.y < localPlayer.players.y+300 && trees[i].obj.y > localPlayer.players.y-300 ){
+            if(trees[i].obj.y > localPlayer.players.y){trees[i].obj.y += 250}
+            if(trees[i].obj.y < localPlayer.players.y){trees[i].obj.y -= 250}
+        }
+    }
+    
 	text = game.add.text(10, 33, "Score: " + localPlayer.score, {
         font: "25px Arial",
         fill: "#ff0044",
@@ -74,22 +133,65 @@ function create(){
 	text.fixedToCamera = true;
    
     game.camera.follow(localPlayer.players);
-    game.camera.deadzone = new Phaser.Rectangle(100,100, 130, 130);
+    game.camera.deadzone = new Phaser.Rectangle(400, 200, 558, 300);
 	game.camera.focusOnXY(0, 0);
-    
-    hpB = game.add.sprite(2, 2, 'hpB');
+
     hpF = game.add.sprite(2, 2, 'hpF');
-    xpB = game.add.sprite(2, 10, 'xpB');
-    xpF = game.add.sprite(2, 10, 'xpF');
-    xpF.width = 1;
-	pause = game.add.button(5, 60, 'pausebutton', pauseGame, this, 2, 1, 0);
+    hpB = game.add.sprite(2, 2, 'hpB');
+	
+	hpF.height = 50;
+	hpF.width = 200;
+	
+	hpB.height = 50;
+	hpB.width = 200;
+    
+    xpB = game.add.sprite(2, hpF.y+20, 'xpB');
+    xpF = game.add.sprite(2,hpF.y+20, 'xpF');
+	xpF.height = 40;
+	xpF.width = 160;
+	
+	xpB.height = 10;
+	xpB.width = 160;
+	
+	overMenu = game.add.sprite(game.camera.x, game.camera.y, 'overMenu');
+	overMenu.visible = false;
+
+	menuRight = game.add.button(465, 3, 'menu', menuClickRight, this, 2, 1, 0);
+    menuRight.input.priorityID = 2;
+	menuRight.alpha = 0;
+	
+	inven = game.add.button(-100, -100, 'inven', menuClickRight, this, 2, 1, 0);
+    inven.input.priorityID = 3;
+	inven.alpha = 0;
+	
+	xpF.width = 1;
+	pause = game.add.button(5, 230, 'pausebutton', pauseGame, this, 2, 1, 0);
+	pause.height = 50  ;
+	pause.width = 50 ;
+	
     cs = game.add.sprite(game.world.randomX, game.world.randomY, 'chainsaw');
+	HAScs = game.add.sprite(inven.x+5, inven.y+5, 'chainsaw');
+	HAScs.visible = false;
     console.log(cs.x + ':' + cs.y);
+	
+	arrows = game.add.group();
+    arrows.createMultiple(30, 'arrow');
+    arrows.setAll('anchor.x', 0.5);
+    arrows.setAll('anchor.y', 0.5);
+    arrows.setAll('outOfBoundsKill', true);
+	
+	cursors = game.input.keyboard.createCursorKeys();
 }
 
 function update(){
-    updateText()
-    game.input.onDown.add(getThere, this);
+
+    updateText();
+	
+    //game.input.onDown.add(getThere, this);
+	bg.events.onInputDown.add(getThere, this);
+	
+	localPlayer.players.events.onInputDown.add(inventory, this);
+	 
     if(localPlayer.moveBoolX){
         localPlayer.players.body.velocity.x = (localPlayer.dx/localPlayer.time)*1000;
         if(localPlayer.dx > 0){localPlayer.facing = 'rightStop';}
@@ -107,36 +209,54 @@ function update(){
         if((localPlayer.players.y < localPlayer.newY+2) && (localPlayer.players.y > localPlayer.newY-2)){
             localPlayer.players.body.velocity.y = 0;
             localPlayer.players.y = localPlayer.newY;
-            localPlayer.moveBoolY = false;
+            localPlayer.moveBoolY = false
+			
         }
     }
     if(localPlayer.players.body.velocity.y == 0 &&
        localPlayer.players.body.velocity.x == 0){
         localPlayer.players.animations.play(localPlayer.facing);
     }
+	
+    for(var i=0; i<numOfRocks; i++){game.physics.collide(rocks[i].obj, localPlayer.players, colRocks);}
     
     land.tilePosition.x = -game.camera.x;
     land.tilePosition.y = -game.camera.y;
     text.x = game.camera.x+5;
-    text.y = game.camera.y+33;
-    pause.x = game.camera.x+5;
-    pause.y = game.camera.y+66;
+    text.y = game.camera.y+80;
+    pause.x = game.camera.x+210;
+    pause.y = game.camera.y+1;
     hpF.x = game.camera.x+2;
     hpF.y = game.camera.y+2;
     hpB.x = game.camera.x+2;
     hpB.y = game.camera.y+2;
     xpF.x = game.camera.x+2;
-    xpF.y = game.camera.y+14;
+    xpF.y = game.camera.y+60;
     xpB.x = game.camera.x+2;
-    xpB.y = game.camera.y+14;
-    
+    xpB.y = game.camera.y+60;
+
+    overMenu.x = game.camera.x+120;
+	overMenu.y = game.camera.y+50;
+	HAScs.x = inven.x+8;
+	HAScs.y = inven.y+14;
+	HAScs.sclae = 0.6;
+        
     if(localPlayer.players.alive){moveEnemy();}
     for (var i = 0; i < enemies.length; i++){
         if (enemies[i].alive){
             game.physics.collide(enemies[i].zombie, localPlayer.players, collisionHandler);
+			game.physics.collide(enemies[i].zombie, arrows, collisionHandler2);
+			game.physics.collide(cs, localPlayer.players, collisionHandler3);
+			game.physics.collide(coin, localPlayer.players, collisionHandler4);
         }
     }
-    if(localPlayer.score == 5){text.setText("You Win!");}    
+    //if(localPlayer.score == 5){text.setText("You Win!");}    
+	if (weapon){if (cursors.up.isDown){fire();}}
+	
+	if(localPlayer.score == 50){
+        rocks[4].visible = false;
+        rocks[6].visible = false;
+	}
 }
 function moveEnemy(){
     for(var i = 0; i<numOfZombs; i++){        
@@ -155,6 +275,12 @@ function moveEnemy(){
     }
 }
 function getThere(){
+    if(!menuUp){
+	moved = true;
+	//game.add.tween(inven).to({alpha: 0}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+inven.x = -200;
+inven.y = -200;
+inventoryOpen = true;
     localPlayer.speed = 100;
     localPlayer.newX = game.input.worldX;
     localPlayer.newY = game.input.worldY;
@@ -169,7 +295,10 @@ function getThere(){
     if(localPlayer.dx>0 && localPlayer.xy > 0){localPlayer.players.animations.play('right')}
     if(localPlayer.dy<0 && localPlayer.xy < 0){localPlayer.players.animations.play('up')}
     if(localPlayer.dy>0 && localPlayer.xy < 0){localPlayer.players.animations.play('down')}
+	}
 }
+
+
 
 function collisionHandler(obj1, obj2){
     if(hpF.width < 0){
@@ -179,9 +308,8 @@ function collisionHandler(obj1, obj2){
     else{hpF.width -= dmg;}
 }
 
-function updateText(){
-    text.setText("Score: " + localPlayer.score);
-}
+function updateText(){text.setText("Score: " + localPlayer.score);}
+
 function pauseGame(){
     text.setText('PAUSED');
 	game.paused = true;
@@ -193,3 +321,94 @@ function resumeGame(){
     pause.events.onInputDown.remove(resumeGame,this);
     pause.events.onInputDown.add(pauseGame,this);
 }
+
+function menuClickRight () {}
+function menuClickLeft () {if (weapon){fire();}}
+function colRocks(obj1,obj2){
+    localPlayer.players.body.velocity.x = 0;
+    localPlayer.dx = 0;
+    localPlayer.dy = 0;
+    obj2.body.velocity.y = 0;
+    if(obj1.x>obj2.x){localPlayer.facing = 'leftStop';}
+    if(obj1.x<obj2.x){localPlayer.facing = 'rightStop';}
+    if(obj1.y>obj2.y){localPlayer.facing = 'downStop';}
+    if(obj1.y<obj2.y){localPlayer.facing = 'upStop';}
+    console.log('hello');
+}
+
+function fire () {
+    if (game.time.now > nextFire && arrows.countDead() > 0){
+        nextFire = game.time.now + fireRate;
+        var arrow = arrows.getFirstDead();
+        arrow.reset(localPlayer.players.x, localPlayer.players.y);
+        arrow.rotation = game.physics.moveToPointer(arrow, 1000);
+    }
+}
+
+function collisionHandler2(obj1, obj2) {
+    obj1.kill();
+	obj2.kill();
+	localPlayer.score +=5;
+	killzom.play();
+	xpF.width + exp;
+}
+
+function collisionHandler3(obj1, obj2) {
+    weapon = true;
+    obj1.kill();
+    HAScs.visible = true;
+}
+
+function collisionHandler4(obj1, obj2) {
+    obj1.kill();
+    localPlayer.score += 100;
+}
+
+function inventory() {
+    if(inventoryOpen){
+        if(moved){
+            inven.x = localPlayer.newX + 20;
+            inven.y = localPlayer.newY - 20;
+            game.add.tween(inven).to({alpha: 1}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+            game.add.tween(HAScs).to({alpha: 1}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+            inventoryOpen = false;
+        
+        }
+        else{
+            inven.x = localPlayer.x-10;
+            inven.y = localPlayer.y;
+            game.add.tween(inven).to({alpha: 1}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+            game.add.tween(HAScs).to({alpha: 1}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+            inventoryOpen = false;
+        }
+    }
+    else{
+        game.add.tween(inven).to({alpha: 0}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+        game.add.tween(HAScs).to({alpha: 0}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+        inven.x = -200;
+        inven.y = -200;
+        inventoryOpen = true;
+    }
+}
+
+/*
+function bigboss() {
+if(localPlayer.score == 50){
+    bosses = [];
+    for (var i = 0; i < 1; i++){
+        bosses.push(new EnemyZom());
+        bosses[i].zombie.animations.add('downZ',  [0,1,2,1],    localPlayer.fps, true);
+        bosses[i].zombie.animations.add('leftZ',  [3,4,5,4],    localPlayer.fps, true);
+        bosses[i].zombie.animations.add('rightZ', [6,7,8,7],    localPlayer.fps, true);
+        bosses[i].zombie.animations.add('upZ',    [9,10,11,10], localPlayer.fps, true);
+        if(bosses[i].zombie.x < localPlayer.players.x+300 && bosses[i].zombie.x > localPlayer.players.x-300 ){
+            if(bosses[i].zombie.x > localPlayer.players.x){bosses[i].zombie.x += 250}
+            if(bosses[i].zombie.x < localPlayer.players.x){bosses[i].zombie.x -= 250}
+        }
+        if(bosses[i].zombie.y < localPlayer.players.y+300 && bosses[i].zombie.y > localPlayer.players.y-300 ){
+            if(bosses[i].zombie.y > localPlayer.players.y){bosses[i].zombie.y += 250}
+            if(bosses[i].zombie.y < localPlayer.players.y){bosses[i].zombie.y -= 250}
+        }
+    }
+}
+}*/

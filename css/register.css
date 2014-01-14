@@ -1,0 +1,6 @@
+#registerForm{
+    margin-top:200px;
+    margin-left:100px;
+}
+#submitButton, #reset, #home, #password, #confirmPassword, #userName, #email{color:black;}
+#home{margin-left:200px;}

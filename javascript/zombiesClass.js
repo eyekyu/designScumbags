@@ -14,7 +14,6 @@ function EnemyZom(){
     this.zombie.anchor.setTo(0.5, 0.5);
     this.zombie.body.immovable = true;
     this.zombie.body.collideWorldBounds = true;
-    this.zombie.body.immovable = false;
 }
 EnemyZom.prototype.damage = function(){
     this.health -= 1;
