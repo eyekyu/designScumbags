@@ -10,31 +10,31 @@ function preload(){
     });
     
     //load assets
-	game.load.spritesheet('playerSpriteSheet', '../images/character.png',27,32);
+        game.load.spritesheet('playerSpriteSheet', '../images/character.png',27,32);
     game.load.spritesheet('zombie',            '../images/zombie.png',   26,32);
     
     game.load.audio('kill', ['../sounds/kill.mp3']);
     
     text.setText("Loading..");
-	game.load.image('bg',            '../images/bg.jpg');
+        game.load.image('bg',            '../images/bg.jpg');
     game.load.image('hpF',           '../images/hpF3.png');
     game.load.image('hpB',           '../images/hpB3.png');
     game.load.image('xpF',           '../images/xpF.png');
     game.load.image('xpB',           '../images/xpB.png');
     game.load.image('chainsaw',      '../images/bowArrow.png');
-	game.load.image('menu',          '../images/QA.png');
-	game.load.image('inven',         '../images/inventory.png');
-	game.load.image('invisibleSheet','../images/sheet.png');
-	game.load.image('tree',          '../images/trees.png');
-	game.load.image('overMenu',      '../images/menu.png');
-	game.load.image('pausebutton',   '../images/pausebutton.png');
+        game.load.image('menu',          '../images/QA.png');
+        game.load.image('inven',         '../images/inventory.png');
+        game.load.image('invisibleSheet','../images/sheet.png');
+        game.load.image('tree',          '../images/trees.png');
+        game.load.image('overMenu',      '../images/menu.png');
+        game.load.image('pausebutton',   '../images/pausebutton.png');
     game.load.image('arrow',         '../images/arrow.png');
-	game.load.image('pond',          '../images/pond.png');
-	game.load.image('rock',          '../images/rock.png');
-	game.load.image('coin',          '../images/coin.png');
+        game.load.image('pond',          '../images/pond.png');
+        game.load.image('rock',          '../images/rock.png');
+        game.load.image('coin',          '../images/coin.png');
     text.setText("Loading");
   /*game.load.audio('BG', ['Travel.mp3']);
-	music = game.add.audio('BG');
+        music = game.add.audio('BG');
     music.play();
   */
 }
@@ -42,20 +42,20 @@ function preload(){
 function create(){
     //assign assest to vars
     game.world.setBounds(0, 0, 2000, 2000);
-	killzom = game.add.audio('kill');
+        killzom = game.add.audio('kill');
     land = game.add.tileSprite (-50, -50, game.width+100, game.height+100, 'bg');
     land.fixedToCamera = true;
-	
-	bg = game.add.sprite(0, 0, 'invisibleSheet');
-	bg.fixedToCamera = true;
-	bg.scale.setTo(origWidth, origHeight);
-	bg.inputEnabled = true;
-	bg.input.priorityID = 0;
-	
-	coin = game.add.sprite(760, 180, 'coin');
-    coin.anchor.setTo(0.5, 0.5);
+        
+        bg = game.add.sprite(0, 0, 'invisibleSheet');
+        bg.fixedToCamera = true;
+        bg.scale.setTo(origWidth, origHeight);
+        bg.inputEnabled = true;
+        bg.input.priorityID = 0;
+        
+        coin = game.add.sprite(760, 180, 'coin');
+        coin.anchor.setTo(0.5, 0.5);
     
-	for(var i = 0; i<numOfRocks; i++){
+        for(var i = 0; i<numOfRocks; i++){
         var centX = coin.x;
         var centY = coin.y;
         var rockX;
@@ -74,12 +74,12 @@ function create(){
         rocks[i].obj.width = 30;
         rocks[i].obj.height = 30;
     }
-	
+        
     new Obs(670, 700, 'pond');
-	
-	//allows us to add more touch inputs
-	//game.input.addPointer();
-	
+        
+        //allows us to add more touch inputs
+        //game.input.addPointer();
+        
     for(var i = 0; i < 1; i++){
         allPlayers.push(new Player());
         //sprites for when not moving
@@ -124,74 +124,69 @@ function create(){
             if(trees[i].obj.y < localPlayer.players.y){trees[i].obj.y -= 250}
         }
     }
-    
-	text = game.add.text(10, 33, "Score: " + localPlayer.score, {
-        font: "25px Arial",
-        fill: "#ff0044",
-        align: "left"
-    });
-	text.fixedToCamera = true;
+    text = game.add.text(10, 33, "Score: " + localPlayer.score, {
+    font: "25px Arial",
+    fill: "#ff0044",
+    align: "left"
+});
+    text.fixedToCamera = true;
    
     game.camera.follow(localPlayer.players);
     game.camera.deadzone = new Phaser.Rectangle(400, 200, 558, 300);
-	game.camera.focusOnXY(0, 0);
+    game.camera.focusOnXY(0, 0);
 
     hpF = game.add.sprite(2, 2, 'hpF');
     hpB = game.add.sprite(2, 2, 'hpB');
-	
-	hpF.height = 50;
-	hpF.width = 200;
-	
-	hpB.height = 50;
-	hpB.width = 200;
+        
+    hpF.height = 50;
+    hpF.width = 200;
+    
+    hpB.height = 50;
+    hpB.width = 200;
     
     xpB = game.add.sprite(2, hpF.y+20, 'xpB');
     xpF = game.add.sprite(2,hpF.y+20, 'xpF');
-	xpF.height = 40;
-	xpF.width = 160;
-	
-	xpB.height = 10;
-	xpB.width = 160;
-	
-	overMenu = game.add.sprite(game.camera.x, game.camera.y, 'overMenu');
-	overMenu.visible = false;
+    xpF.height = 40;
+    xpF.width = 160;
+        
+    xpB.height = 10;
+    xpB.width = 160;
+        
+    overMenu = game.add.sprite(game.camera.x, game.camera.y, 'overMenu');
+    overMenu.visible = false;
 
-	menuRight = game.add.button(465, 3, 'menu', menuClickRight, this, 2, 1, 0);
+    menuRight = game.add.button(465, 3, 'menu', menuClickRight, this, 2, 1, 0);
     menuRight.input.priorityID = 2;
-	menuRight.alpha = 0;
-	
-	inven = game.add.button(-100, -100, 'inven', menuClickRight, this, 2, 1, 0);
+    menuRight.alpha = 0;
+        
+    inven = game.add.button(-100, -100, 'inven', menuClickRight, this, 2, 1, 0);
     inven.input.priorityID = 3;
-	inven.alpha = 0;
-	
-	xpF.width = 1;
-	pause = game.add.button(5, 230, 'pausebutton', pauseGame, this, 2, 1, 0);
-	pause.height = 50  ;
-	pause.width = 50 ;
-	
+    inven.alpha = 0;
+        
+    xpF.width = 1;
+    pause = game.add.button(5, 230, 'pausebutton', pauseGame, this, 2, 1, 0);
+    pause.height = 50  ;
+    pause.width = 50 ;
+        
     cs = game.add.sprite(game.world.randomX, game.world.randomY, 'chainsaw');
-	HAScs = game.add.sprite(inven.x+5, inven.y+5, 'chainsaw');
-	HAScs.visible = false;
+    HAScs = game.add.sprite(inven.x+5, inven.y+5, 'chainsaw');
+    HAScs.visible = false;
     console.log(cs.x + ':' + cs.y);
-	
-	arrows = game.add.group();
+        
+    arrows = game.add.group();
     arrows.createMultiple(30, 'arrow');
     arrows.setAll('anchor.x', 0.5);
     arrows.setAll('anchor.y', 0.5);
     arrows.setAll('outOfBoundsKill', true);
-	
-	cursors = game.input.keyboard.createCursorKeys();
+        
+        cursors = game.input.keyboard.createCursorKeys();
 }
 
 function update(){
-
     updateText();
-	
     //game.input.onDown.add(getThere, this);
-	bg.events.onInputDown.add(getThere, this);
-	
-	localPlayer.players.events.onInputDown.add(inventory, this);
-	 
+    bg.events.onInputDown.add(getThere, this);
+    localPlayer.players.events.onInputDown.add(inventory, this);         
     if(localPlayer.moveBoolX){
         localPlayer.players.body.velocity.x = (localPlayer.dx/localPlayer.time)*1000;
         if(localPlayer.dx > 0){localPlayer.facing = 'rightStop';}
@@ -210,15 +205,16 @@ function update(){
             localPlayer.players.body.velocity.y = 0;
             localPlayer.players.y = localPlayer.newY;
             localPlayer.moveBoolY = false
-			
+                        
         }
     }
     if(localPlayer.players.body.velocity.y == 0 &&
        localPlayer.players.body.velocity.x == 0){
         localPlayer.players.animations.play(localPlayer.facing);
     }
-	
-    for(var i=0; i<numOfRocks; i++){game.physics.collide(rocks[i].obj, localPlayer.players, colRocks);}
+        
+    for(var i=0; i<rocks.length; i++){game.physics.collide(rocks[i].obj, localPlayer.players, obstacle);}
+    for(var i=0; i<trees.length; i++){game.physics.collide(trees[i].obj, localPlayer.players, obstacle);}
     
     land.tilePosition.x = -game.camera.x;
     land.tilePosition.y = -game.camera.y;
@@ -236,27 +232,27 @@ function update(){
     xpB.y = game.camera.y+60;
 
     overMenu.x = game.camera.x+120;
-	overMenu.y = game.camera.y+50;
-	HAScs.x = inven.x+8;
-	HAScs.y = inven.y+14;
-	HAScs.sclae = 0.6;
+        overMenu.y = game.camera.y+50;
+        HAScs.x = inven.x+8;
+        HAScs.y = inven.y+14;
+        HAScs.sclae = 0.6;
         
     if(localPlayer.players.alive){moveEnemy();}
     for (var i = 0; i < enemies.length; i++){
         if (enemies[i].alive){
             game.physics.collide(enemies[i].zombie, localPlayer.players, collisionHandler);
-			game.physics.collide(enemies[i].zombie, arrows, collisionHandler2);
-			game.physics.collide(cs, localPlayer.players, collisionHandler3);
-			game.physics.collide(coin, localPlayer.players, collisionHandler4);
+                        game.physics.collide(enemies[i].zombie, arrows, collisionHandler2);
+                        game.physics.collide(cs, localPlayer.players, collisionHandler3);
+                        game.physics.collide(coin, localPlayer.players, collisionHandler4);
         }
     }
     //if(localPlayer.score == 5){text.setText("You Win!");}    
-	if (weapon){if (cursors.up.isDown){fire();}}
-	
-	if(localPlayer.score == 50){
+        if (weapon){if (cursors.up.isDown){fire();}}
+        
+        if(localPlayer.score == 50){
         rocks[4].visible = false;
         rocks[6].visible = false;
-	}
+        }
 }
 function moveEnemy(){
     for(var i = 0; i<numOfZombs; i++){        
@@ -276,8 +272,8 @@ function moveEnemy(){
 }
 function getThere(){
     if(!menuUp){
-	moved = true;
-	//game.add.tween(inven).to({alpha: 0}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
+        moved = true;
+        //game.add.tween(inven).to({alpha: 0}, 1000, Phaser.Easing.Linear.None,true,0,0,false);
 inven.x = -200;
 inven.y = -200;
 inventoryOpen = true;
@@ -295,46 +291,25 @@ inventoryOpen = true;
     if(localPlayer.dx>0 && localPlayer.xy > 0){localPlayer.players.animations.play('right')}
     if(localPlayer.dy<0 && localPlayer.xy < 0){localPlayer.players.animations.play('up')}
     if(localPlayer.dy>0 && localPlayer.xy < 0){localPlayer.players.animations.play('down')}
-	}
-}
-
-
-
-function collisionHandler(obj1, obj2){
-    if(hpF.width < 0){
-        obj2.kill();
-        hpF.width = 0;
-    }
-    else{hpF.width -= dmg;}
+        }
 }
 
 function updateText(){text.setText("Score: " + localPlayer.score);}
 
 function pauseGame(){
     text.setText('PAUSED');
-	game.paused = true;
+        game.paused = true;
     pause.events.onInputDown.remove(pauseGame,this);
     pause.events.onInputDown.add(resumeGame,this);
 }
 function resumeGame(){
-	game.paused = false;
+        game.paused = false;
     pause.events.onInputDown.remove(resumeGame,this);
     pause.events.onInputDown.add(pauseGame,this);
 }
 
 function menuClickRight () {}
 function menuClickLeft () {if (weapon){fire();}}
-function colRocks(obj1,obj2){
-    localPlayer.players.body.velocity.x = 0;
-    localPlayer.dx = 0;
-    localPlayer.dy = 0;
-    obj2.body.velocity.y = 0;
-    if(obj1.x>obj2.x){localPlayer.facing = 'leftStop';}
-    if(obj1.x<obj2.x){localPlayer.facing = 'rightStop';}
-    if(obj1.y>obj2.y){localPlayer.facing = 'downStop';}
-    if(obj1.y<obj2.y){localPlayer.facing = 'upStop';}
-    console.log('hello');
-}
 
 function fire () {
     if (game.time.now > nextFire && arrows.countDead() > 0){
@@ -343,25 +318,6 @@ function fire () {
         arrow.reset(localPlayer.players.x, localPlayer.players.y);
         arrow.rotation = game.physics.moveToPointer(arrow, 1000);
     }
-}
-
-function collisionHandler2(obj1, obj2) {
-    obj1.kill();
-	obj2.kill();
-	localPlayer.score +=5;
-	killzom.play();
-	xpF.width + exp;
-}
-
-function collisionHandler3(obj1, obj2) {
-    weapon = true;
-    obj1.kill();
-    HAScs.visible = true;
-}
-
-function collisionHandler4(obj1, obj2) {
-    obj1.kill();
-    localPlayer.score += 100;
 }
 
 function inventory() {
