@@ -1,0 +1,41 @@
+{ "height":32,
+ "layers":[{
+         "data":[1, 2, 3, 4, 5, 6, 7,
+                 8, 9, 10,11,12,13,14,
+                 15,16,17,18,19,20,21,
+                 22,23,24,25,26,27,28,
+                 29,30,31,32,33,34,35,
+                 36,37,38,39,40,41,42,
+                 43,44,45,46,
+                 50,51,52,53,
+                    58,59,60,
+                    65,66,67
+                ],
+         "height":32,
+         "name":"Ground",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":32,
+         "x":0,
+         "y":0
+        }],
+ "orientation":"orthogonal",
+ "properties":{ },
+ "tileheight":32,
+ "tilesets":[{
+         "firstgid":1,
+         "image":"tilemap.png",
+         "imageheight":320,
+         "imagewidth":224,
+         "margin":1,
+         "name":"Desert",
+         "properties":{ },
+         "spacing":1,
+         "tileheight":32,
+         "tilewidth":32
+        }],
+ "tilewidth":32,
+ "version":1,
+ "width":32
+}

@@ -23,9 +23,9 @@ function preload() {
 
 function create() {
 
-    title = game.add.sprite(50, 50, 'title');
-	title.height = 200;
-	title.width = 350;
+    title = game.add.sprite(10, 50, 'title');
+	title.height = 280;
+	title.width = 400;
 	title.animations.add('title',  [0,0,0,0,0,0,0,0,1,3,4,5,6,7,8,9,0],    20, true);
 
 	title.animations.play('title', 10, true);

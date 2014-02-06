@@ -14,9 +14,11 @@ function Player(){
     this.xy = 0;
     this.facing = '';
     this.score = 0;
-    this.players = game.add.sprite(200, 200, 'playerSpriteSheet');
-    this.players.body.collideWorldBounds = true;
-    this.players.anchor.setTo(0.5, 0.5);
-    this.players.inputEnabled = true;
-    this.players.body.immovable = false;
+    this.sprite = game.add.sprite(500, 500, 'playerSpriteSheet');
+    this.sprite.body.collideWorldBounds = true;
+	this.sprite.height = (this.sprite.height)*2;
+	this.sprite.width = (this.sprite.width)*2;
+    this.sprite.anchor.setTo(0.5, 0.5);
+    this.sprite.inputEnabled = true;
+    this.sprite.body.immovable = false;
 }
